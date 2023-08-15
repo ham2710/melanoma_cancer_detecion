@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>Melonoma Cancer Detection</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.gstatic.com" rel="preconnect">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+  <!-- Option 1: Include in HTML -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+  <link href='https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css' rel='stylesheet'>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0-alpha3/css/bootstrap.min.css">
+ <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+ 
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+		  integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+		  crossorigin="anonymous">
+  </head>
+ 
+
+<!-- Core build with no theme, formatting, non-essential modules -->
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fsvs/1.2.2/css/style.css">
+
+</head>
+
+<body>
+
+  <!-- ======= Header ======= -->
+	<header id="header" class="page-header text-center">
+
+		<div class="align-items-center justify-content-between py-3">
+			<h1><span class="d-lg-block">Melonoma Cancer</span></h1>
+		</div>
+	<!-- As a heading -->
+
+	</header><!-- End Header -->
+	
+	<main id="main">
+		<section class="section">
+			<div class="row justify-content-md-center">
+				<div class="col-lg-8 center">
+					<div class="card">
+						<div class="card-body">
+							<div class="card-title font-weight-bold">File Upload</div>
+
+							<!-- General Form Elements -->
+							<form method="post" action="upload" enctype="multipart/form-data">
+							
+								<div class="row mb-3">
+									<label for="inputNumber" class="col-sm-2 col-form-label">File Name(s)</label>
+									<div class="col-sm-10">
+									<input class="form-control" type="file" multiple="true" name="files[]" id="formFile" required>
+									</div>
+									<div class="col-sm-10">
+									<input id="submit_to_upload" class="rounded" type="submit" value="Submit" onclick="setupData()">
+									</div>
+								</div>
+										
+
+								{% with messages = get_flashed_messages(with_categories=true) %}
+								<div id="alert_success_box" class="row mb-3 justify-content-md-center">
+									<div class="col-sm-8">
+										{% if messages %}
+										<ul class=flashes>
+										{% for category, message in messages %}
+										<div class="alert alert-{{ category }}" role="alert">
+											<h4 class="alert-heading">Information</h4>
+											<p>{{ message }}</p>
+											</div>
+										{% endfor %}
+									</ul>
+									{% endif %}
+									</div>
+								</div>
+									{% endwith %}
+
+								
+							</form><!-- End General Form Elements -->
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+		<section class="section">
+			<div class="row justify-content-md-center py-3">
+				<div class="col-lg-8 center">
+
+					<div class="card">
+						<div class="card-body">
+							<div class="card-title"><p class="font-weight-bold">Files List</p></div>
+
+								<table id="file_list_table" class="table table-striped" style="width:100%">
+									<thead>
+										<tr>
+											<th>Name</th>
+											<th>View</th>
+										</tr>
+									</thead>
+									<tfoot>
+										<tr>
+											<th>Name</th>
+											<th>View</th>
+										</tr>
+									</tfoot>
+								</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>	
+		
+		<footer id="footer" class="card-footer text-center">
+
+			<div class="footer-copyright text-center py-3">© 2023 Copyright:
+				<a href="/"> Pitchers</a>
+			</div>
+	
+	</footer><!-- End Footer -->			
+	</main><!-- End #main -->
+	
+
+	<div id="delete_message_modal" class="modal" tabindex="-1" role="dialog">
+		<div class="modal-dialog" role="document">
+		  <div class="modal-content">
+			<div class="modal-header">
+			  <h5 class="modal-title">Information</h5>
+			  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+			  </button>
+			</div>
+			<div class="modal-body">
+				<div class="alert alert-danger" role="alert">Image Deleted Successfully !!!</div>
+			</div>
+			<div class="modal-footer">
+			  <button id="close_delete_modal" type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+			</div>
+		  </div>
+		</div>
+	  </div>
+
+
+	<!-- image display modal -->
+	<div class="container">
+		<!-- Modal -->
+		<div class="modal fade bd-example-modal-lg" id="myModal" tabindex="-1" role="dialog">
+			<div class="modal-dialog modal-lg" role="document">
+			  <div class="modal-content">
+				<div class="modal-header">
+				  <h5 class="modal-title" id="modal-heading"> </h5>
+				  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				  </button>
+				</div>
+				<div class="modal-body" id="modal_for_image">
+					
+				</div>
+				<div class="modal-footer">
+				  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				</div>
+			  </div>
+			</div>
+		  </div>
+	</div>
+
+  	<!-- Vendor JS Files -->
+
+	<!-- Template Main JS File -->
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+			integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+			crossorigin="anonymous">
+	</script>
+	<script src="https://code.jquery.com/jquery-3.6.4.js" integrity="sha256-a9jBBRygX1Bh5lt8GZjXDzyOB+bWve9EiO7tROUtj/E=" crossorigin="anonymous"></script>
+	<script src="https://unpkg.com/htmlshot@1.0.0/index.js"></script>
+	<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+	
+	<script>
+		
+		function showImage(parameter) {
+            
+			$.ajax({
+					type: "POST",
+					url: "/get_image_data",
+					data: JSON.stringify({
+						'id' : parameter
+					}),
+					contentType:"application/json",
+					success: function(result) {
+						$("#myModal").modal()
+						var img = document.createElement("img");
+						img.src = "static/"+result.image_name;
+						img.id = "image_"+result;
+						$('#modal_for_image').empty();
+						$('#modal-heading').empty();
+						$('#modal-heading').prepend("<div class='font-weight-bold'>Skin Cancer Predicted: </div>"+result.cancer_type);
+						$('#modal_for_image').prepend('<img id='+result.image_name+'" src='+"static/"+result.image_name+' />');
+					},
+					error: function(result) {
+						//$("#myModal").modal()
+					}
+				});
+			
+        }
+
+		function deleteImage(parameter) {
+            
+			$.ajax({
+				type: "POST",
+				url: "/delete_image",
+				data: JSON.stringify({
+						'id' : parameter
+					}),
+					contentType:"application/json",
+					success: function(result) {
+						
+						$("#delete_message_modal").modal()
+					},
+					error: function(result) {
+						//$("#myModal").modal()
+					}
+				});
+        }
+		
+		function setupData() {
+			$(document).ready(function () {
+				$('#file_list_table').DataTable({
+					destroy : true,
+					"aaSorting": [],
+					ajax: {
+						"type": "GET",
+						"url": "/get_file_details",
+						"dataType": "json",
+						"dataSrc": "data",
+						"contentType":"application/json"
+					},
+					columns: [
+						{
+							data: "name"
+						},
+						{
+							data: "view",
+							"width": "20%",
+							"mRender": function(data, type, full) {
+								return '<div class="text-center"> \
+											<button type="button" class=" btn btn-info btn-md" data-toggle="modal" onClick="showImage('+data+');">\
+												View \
+											</button>\
+											</div>'
+								//return '<div class="text-center"><a class="btn btn-info btn-md" href= '+data+'>View</a></div>';
+							}
+						}
+					],
+					success: function(result) {
+					}
+				});
+			});
+		}
+
+
+		$( window ).on( "load", setupData );
+		$('#close_delete_modal').click(function() {
+			location.reload();
+		});
+		$(document).on('click',"#close_delete_modal", function(){
+			window.location.href = window.location.origin + window.location.pathname;    
+			location.reload();
+		});
+
+		$("#alert_success_box").delay(1000).fadeOut(300);
+	</script>
+	
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+			integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+			crossorigin="anonymous">
+	</script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+		integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+		crossorigin="anonymous">
+	</script>
+</body>
+
+</html>
