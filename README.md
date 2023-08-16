@@ -1,2 +1,2 @@
-# melanoma_cancer_detecion
+# melanoma_cancer_detection
 Melanoma Cancer
